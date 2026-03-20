@@ -111,3 +111,109 @@ describe('buildFullHTML() - HTML page assembly (Task 4.2)', () => {
     expect(html).toContain('<p>test</p>');
   });
 });
+
+describe('分页优化 - Pagination Optimization', () => {
+  const css = getDefaultCSS();
+
+  it('should contain @media print block with all expected pagination selectors', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/);
+    expect(printBlock).toBeTruthy();
+    const block = printBlock![0];
+    // All expected selectors should be present
+    expect(block).toContain('pre');
+    expect(block).toContain('ul, ol');
+    expect(block).toContain('li');
+    expect(block).toContain('blockquote');
+    expect(block).toContain('p {');
+    expect(block).toMatch(/h1,\s*h2,\s*h3,\s*h4,\s*h5,\s*h6/);
+    expect(block).toContain('table');
+    expect(block).toContain('tr');
+    expect(block).toContain('thead');
+    expect(block).toContain('img');
+  });
+
+  it('pre rule should contain break-inside: auto and white-space: pre-wrap', () => {
+    // Extract the @media print block
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    // Find the pre rule within the print block
+    const preRule = printBlock.match(/\bpre\s*\{[^}]*\}/);
+    expect(preRule).toBeTruthy();
+    expect(preRule![0]).toContain('break-inside: auto');
+    expect(preRule![0]).toContain('white-space: pre-wrap');
+  });
+
+  it('li rule should contain break-inside: avoid, orphans: 2, widows: 2', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const liRule = printBlock.match(/\bli\s*\{[^}]*\}/);
+    expect(liRule).toBeTruthy();
+    expect(liRule![0]).toContain('break-inside: avoid');
+    expect(liRule![0]).toContain('orphans: 2');
+    expect(liRule![0]).toContain('widows: 2');
+  });
+
+  it('ul, ol rule should contain break-inside: auto', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const ulOlRule = printBlock.match(/ul,\s*ol\s*\{[^}]*\}/);
+    expect(ulOlRule).toBeTruthy();
+    expect(ulOlRule![0]).toContain('break-inside: auto');
+  });
+
+  it('blockquote rule should contain break-inside: avoid', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const bqRule = printBlock.match(/blockquote\s*\{[^}]*\}/);
+    expect(bqRule).toBeTruthy();
+    expect(bqRule![0]).toContain('break-inside: avoid');
+  });
+
+  it('p rule should contain orphans: 3 and widows: 3', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const pRule = printBlock.match(/\bp\s*\{[^}]*\}/);
+    expect(pRule).toBeTruthy();
+    expect(pRule![0]).toContain('orphans: 3');
+    expect(pRule![0]).toContain('widows: 3');
+  });
+
+  it('h1-h6 rule should contain break-after: avoid and break-inside: avoid', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const headingRule = printBlock.match(/h1,\s*h2,\s*h3,\s*h4,\s*h5,\s*h6\s*\{[^}]*\}/);
+    expect(headingRule).toBeTruthy();
+    expect(headingRule![0]).toContain('break-after: avoid');
+    expect(headingRule![0]).toContain('break-inside: avoid');
+  });
+
+  it('table rule should contain break-inside: auto', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const tableRule = printBlock.match(/\btable\s*\{[^}]*\}/);
+    expect(tableRule).toBeTruthy();
+    expect(tableRule![0]).toContain('break-inside: auto');
+  });
+
+  it('tr rule should contain break-inside: avoid', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const trRule = printBlock.match(/\btr\s*\{[^}]*\}/);
+    expect(trRule).toBeTruthy();
+    expect(trRule![0]).toContain('break-inside: avoid');
+  });
+
+  it('thead rule should contain display: table-header-group', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const theadRule = printBlock.match(/thead\s*\{[^}]*\}/);
+    expect(theadRule).toBeTruthy();
+    expect(theadRule![0]).toContain('display: table-header-group');
+  });
+
+  it('img rule should contain break-inside: avoid and max-height: 80vh', () => {
+    const printBlock = css.match(/@media print\s*\{[\s\S]*?\n\}/)![0];
+    const imgRule = printBlock.match(/\bimg\s*\{[^}]*\}/);
+    expect(imgRule).toBeTruthy();
+    expect(imgRule![0]).toContain('break-inside: avoid');
+    expect(imgRule![0]).toContain('max-height: 80vh');
+  });
+
+  it('@page rule should contain size: A4 and margin: 20mm 15mm 25mm 15mm', () => {
+    const pageRule = css.match(/@page\s*\{[^}]*\}/);
+    expect(pageRule).toBeTruthy();
+    expect(pageRule![0]).toContain('size: A4');
+    expect(pageRule![0]).toContain('margin: 20mm 15mm 25mm 15mm');
+  });
+});

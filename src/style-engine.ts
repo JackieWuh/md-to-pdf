@@ -319,21 +319,55 @@ p {
     font-size: 12pt;
   }
 
+  /* 需求 1: 代码块 — 允许长代码跨页拆分 */
   pre {
     white-space: pre-wrap;
     word-wrap: break-word;
+    break-inside: auto;
   }
 
-  table {
-    page-break-inside: avoid;
+  /* 需求 2: 列表 — 列表项不拆分，列表容器可跨页 */
+  ul, ol {
+    break-inside: auto;
+  }
+  li {
+    break-inside: avoid;
+    orphans: 2;
+    widows: 2;
   }
 
+  /* 需求 3: 引用块 — 短引用不拆分 */
+  blockquote {
+    break-inside: avoid;
+  }
+
+  /* 需求 4: 段落 orphans/widows */
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* 需求 5: 标题与后续内容关联 */
   h1, h2, h3, h4, h5, h6 {
-    page-break-after: avoid;
+    break-after: avoid;
+    break-inside: avoid;
   }
 
+  /* 需求 6: 表格 — 长表格可跨页，单行不拆分，表头重复 */
+  table {
+    break-inside: auto;
+  }
+  tr {
+    break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+
+  /* 需求 7: 图片 — 不拆分 + 限制最大高度 */
   img {
-    page-break-inside: avoid;
+    break-inside: avoid;
+    max-height: 80vh;
   }
 }
 
